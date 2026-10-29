@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Markdown Vault</title><link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+</head><body>
+<header>
+  <button id="toggle" title="Toggle sidebar">☰</button>
+  <button id="open">Open vault</button>
+  <button id="change">Change vault</button>
+  <button id="new">New note</button>
+  <button id="save">Save</button>
+  <button id="encrypt">Encrypt</button>
+  <button id="history">History</button>
+  <button id="summarize">Summarize selected</button>
+  <button id="settings">Settings</button>
+  <span id="status"></span>
+</header>
+<main>
+  <aside id="sidebar"><ul id="tree"><li class="empty">Open a vault folder to see your notes.</li></ul></aside>
+  <section id="pane">
+    <textarea id="editor" spellcheck="false" placeholder="Select or create a note."></textarea>
+    <article id="preview"></article>
+  </section>
+</main>
+<dialog id="dlg"><form method="dialog" id="dlgform"><h3 id="dlgtitle"></h3><div id="dlgbody"></div>
+  <menu><button value="cancel">Cancel</button><button value="ok" id="dlgok">OK</button></menu></form></dialog>
+<script type="module" src="js/main.js"></script>
+</body></html>

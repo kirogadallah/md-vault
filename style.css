@@ -1,0 +1,26 @@
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#1c2230;--mute:#6b7488;--line:#dde1e9;--acc:#2f4b9c}
+@media(prefers-color-scheme:dark){:root{--bg:#14171f;--panel:#1b1f2a;--ink:#e6e9f0;--mute:#8d96ab;--line:#2c3242;--acc:#8fa8f0}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
+header{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+button{font:inherit;padding:5px 10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;cursor:pointer}
+button:hover{border-color:var(--acc)}button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+#status{margin-left:auto;color:var(--mute);font-size:13px}
+main{flex:1;display:flex;min-height:0}
+#sidebar{width:270px;overflow:auto;border-right:1px solid var(--line);background:var(--panel);padding:8px}
+#sidebar.hidden{display:none}
+ul{list-style:none;margin:0;padding:0}#tree ul{padding-left:14px}
+li{padding:2px 0}li.empty{color:var(--mute)}
+.dir{font-weight:600;color:var(--mute);margin-top:6px}
+.file{display:flex;gap:6px;align-items:center}.file span{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file.active span{color:var(--acc);font-weight:600}
+#pane{flex:1;display:grid;grid-template-columns:1fr 1fr;min-width:0}
+#editor{border:0;border-right:1px solid var(--line);padding:16px;resize:none;background:var(--bg);color:var(--ink);font:14px/1.6 ui-monospace,Menlo,Consolas,monospace}
+#preview{padding:16px 24px;overflow:auto;max-width:80ch}
+#preview pre,#preview code{background:var(--panel);border-radius:4px}#preview pre{padding:10px;overflow:auto}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);min-width:320px;max-width:480px}
+dialog label{display:block;margin:8px 0 2px;color:var(--mute);font-size:13px}
+dialog input,dialog select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+dialog menu{display:flex;justify-content:flex-end;gap:6px;padding:0;margin:14px 0 0}
+.ver{display:block;width:100%;text-align:left;margin:3px 0}
+@media(max-width:800px){#pane{grid-template-columns:1fr;grid-template-rows:1fr 1fr}#editor{border-right:0;border-bottom:1px solid var(--line)}}
