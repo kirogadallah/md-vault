@@ -1,29 +1,55 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>Markdown Vault</title><link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 </head><body>
 <header>
-  <button id="toggle" title="Toggle sidebar">☰</button>
-  <button id="open">Open vault</button>
-  <button id="change">Change vault</button>
-  <button id="new">New note</button>
-  <button id="save">Save</button>
-  <button id="encrypt">Encrypt</button>
-  <button id="history">History</button>
-  <button id="summarize">Summarize selected</button>
-  <button id="settings">Settings</button>
+  <button id="toggle" class="icon" title="Show / hide file explorer" aria-label="Show / hide file explorer">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
+  </button>
+  <span class="sep"></span>
+  <div class="grp">
+    <button id="save" class="primary">Save</button>
+  </div>
   <span id="status"></span>
+  <div class="grp">
+    <button id="encrypt" class="icon" title="Encrypt note" aria-label="Encrypt note">
+      <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    </button>
+    <button id="history" class="icon" title="Version history" aria-label="Version history">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+    </button>
+  </div>
 </header>
 <main>
-  <aside id="sidebar"><ul id="tree"><li class="empty">Open a vault folder to see your notes.</li></ul></aside>
+  <aside id="sidebar">
+    <div id="treewrap"><ul id="tree"><li class="empty">Click the gear icon below and choose a vault folder.</li></ul></div>
+    <div class="sidefoot">
+      <button id="new" title="Create a new note">
+        <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 12v6M9 15h6"/></svg>
+        New note
+      </button>
+      <button id="summarize" class="icon ai" title="Summarize selected notes with AI" aria-label="Summarize selected notes with AI">
+      <svg viewBox="0 0 24 24"><path d="M12 3l2.3 5.7L20 11l-5.7 2.3L12 19l-2.3-5.7L4 11l5.7-2.3z"/><path d="M19 3v4M17 5h4"/></svg>
+    </button>
+      <button id="settings" class="icon" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+    </div>
+  </aside>
   <section id="pane">
-    <textarea id="editor" spellcheck="false" placeholder="Select or create a note."></textarea>
+    <textarea id="editor" disabled spellcheck="false" placeholder="Select or create a note."></textarea>
     <article id="preview"></article>
   </section>
 </main>
+
 <dialog id="dlg"><form method="dialog" id="dlgform"><h3 id="dlgtitle"></h3><div id="dlgbody"></div>
-  <menu><button value="cancel">Cancel</button><button value="ok" id="dlgok">OK</button></menu></form></dialog>
+  <menu><button value="ok" id="dlgok" class="primary">OK</button><button value="cancel">Cancel</button></menu></form></dialog>
+
+<dialog id="msg" role="alertdialog"><form method="dialog"><h3 id="msgtitle"></h3><p id="msgbody"></p>
+  <menu><button value="ok" class="primary">OK</button></menu></form></dialog>
+
 <script type="module" src="js/main.js"></script>
 </body></html>
