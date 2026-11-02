@@ -196,15 +196,33 @@ $('history').onclick = async () => {
 $('summarize').onclick = async () => {
   const sel = checked().filter(p => !p.at(-1).endsWith('.enc'));
   if (!sel.length) return fail('Tick one or more .md notes in the file explorer first. Encrypted notes are skipped.', 'No notes selected');
+  if (!root) return fail('Open Settings and choose a vault folder first.', 'No vault open');
+  if (!await leaveCurrent()) return;
   say('Summarizing…', 0);
+  let warn = '';
   try {
     const docs = await Promise.all(sel.map(async p => ({ name: p.join('/'), text: await fs.readText(root, p) })));
-    show(await ai.summarize(cfg.ollamaUrl, cfg.model, docs), null); ed.state.dirty = true;
-    say('Summary ready. Press Save to keep it as a new note.');
+    const text = (await ai.summarize(cfg.ollamaUrl, cfg.model, docs, cfg.forceGpu)).trim();
+    if (!text) throw new Error('The model returned an empty answer.');
+    // Save the summary as its own note in <vault>/summaries/ and open it.
+    const taken = new Set((await fs.listNames(root, ['summaries'])).map(n => n.toLowerCase()));
+    const base = sel.length === 1 ? sel[0].at(-1).replace(/\.md$/i, '') + ' - summary' : 'summary ' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+    let name = `${base}.md`, i = 1;
+    while (taken.has(name.toLowerCase())) name = `${base} (${++i}).md`;
+    const path = ['summaries', name], id = magic.newId();
+    const body = `# Summary\n\n> Sources: ${docs.map(d => d.name).join(', ')}\n\n${text}\n`;
+    const out = magic.join(id, body);
+    await fs.writeText(root, path, out);
+    await backup.snapshot(root, id, out);
+    show(body, path, undefined, id); ed.state.dirty = false;
+    await refresh();
+    say(`Summary saved to summaries/${name}`);
+    warn = await ai.gpuWarning(cfg.ollamaUrl, cfg.model);
   } catch (e) {
     say('', 1);
-    fail(e.message + '\n\nIs Ollama running with OLLAMA_ORIGINS set?', 'AI error');
+    return fail(e.message + '\n\nIs Ollama running with OLLAMA_ORIGINS set?', 'AI error');
   }
+  if (warn) await fail(warn, 'GPU not used');
 };
 
 $('settings').onclick = async () => {
@@ -217,10 +235,11 @@ $('settings').onclick = async () => {
     models.length ? { id: 'model', label: 'Model', options: models, value: cfg.model } : { id: 'model', label: 'Model (Ollama unreachable, type a name)', value: cfg.model },
     { id: 'backupMinutes', label: 'Auto-backup every (minutes, 0 = off)', type: 'number', value: cfg.backupMinutes },
     { id: 'autoSave', label: 'Auto-save when switching notes', options: ['On', 'Off'], value: cfg.autoSave ? 'On' : 'Off' },
+    { id: 'forceGpu', label: 'Force AI to run on the GPU', options: ['On', 'Off'], value: cfg.forceGpu ? 'On' : 'Off' },
     { id: 'botToken', label: 'Telegram bot token (from @BotFather, optional)', type: 'password', value: cfg.botToken }
   ], '', vaultRow);
   if (!a) return;
-  cfg = { ...a, autoSave: a.autoSave === 'On', backupMinutes: Math.max(0, Number(a.backupMinutes) || 0), chatId: a.botToken === cfg.botToken ? cfg.chatId : '' };
+  cfg = { ...a, autoSave: a.autoSave === 'On', forceGpu: a.forceGpu === 'On', backupMinutes: Math.max(0, Number(a.backupMinutes) || 0), chatId: a.botToken === cfg.botToken ? cfg.chatId : '' };
   settings.save(cfg); startBackup(); startBot(); say('Settings saved.');
 };
 
